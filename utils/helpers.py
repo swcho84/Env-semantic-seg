@@ -30,7 +30,7 @@ def get_label_info(csv_path):
         for row in file_reader:
             class_names.append(row[0])
             label_values.append([int(row[1]), int(row[2]), int(row[3])])
-        # print(class_dict)
+        #print(class_dict)
     return class_names, label_values
 
 

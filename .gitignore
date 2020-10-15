@@ -1,4 +1,3 @@
 .idea/
-testing/
-training/
-validation/
+kariDB/
+checkpoints/
