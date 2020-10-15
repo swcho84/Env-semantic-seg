@@ -1,5 +1,10 @@
-# Sidewalk-semantic-seg
-Semantic segmentation for sidewalks. It has different models and options to train over. 
+# Env-semantic-seg
+Semantic segmentation for Environment. It has different models and options to train over. 
+(Ref.: forked from navblind/Sidewalk-semantic-seg, author: navblind)
+
+## Working on..
+- Using multiple GPUs
+- Using OpenCV-DNN module for the inference
 
 ## Train From Scratch
 Run this in the parent directory
