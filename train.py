@@ -42,14 +42,14 @@ parser.add_argument('--continue_training', type=str2bool, default=False, help='W
 parser.add_argument('--dataset', type=str, default="kariDB", help='Dataset you are using.')
 parser.add_argument('--crop_height', type=int, default=480, help='Height of cropped input image to network')
 parser.add_argument('--crop_width', type=int, default=640, help='Width of cropped input image to network')
-parser.add_argument('--batch_size', type=int, default=6, help='Number of images in each batch')
+parser.add_argument('--batch_size', type=int, default=2, help='Number of images in each batch')
 parser.add_argument('--num_val_images', type=int, default=100, help='The number of images to used for validations')
 parser.add_argument('--h_flip', type=str2bool, default=True, help='Whether to randomly flip the image horizontally for data augmentation')
 parser.add_argument('--v_flip', type=str2bool, default=True, help='Whether to randomly flip the image vertically for data augmentation')
 parser.add_argument('--brightness', type=float, default=True, help='Whether to randomly change the image brightness for data augmentation. Specifies the max bightness change as a factor between 0.0 and 1.0. For example, 0.1 represents a max brightness change of 10%% (+-).')
 parser.add_argument('--rotation', type=float, default=True, help='Whether to randomly rotate the image for data augmentation. Specifies the max rotation angle in degrees.')
 parser.add_argument('--model', type=str, default="MobileUNet", help='The model you are using. See model_builder.py for supported models')
-parser.add_argument('--frontend', type=str, default="InceptionV4", help='The frontend you are using. See frontend_builder.py for supported models')
+parser.add_argument('--frontend', type=str, default="MobileNetV2", help='The frontend you are using. See frontend_builder.py for supported models')
 args = parser.parse_args()
 
 
@@ -101,7 +101,7 @@ network, init_fn = model_builder.build_model(model_name=args.model, frontend=arg
 
 loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=network, labels=net_output))
 
-opt = tf.train.RMSPropOptimizer(learning_rate=0.00025, decay=0.995).minimize(loss, var_list=[var for var in tf.trainable_variables()])
+opt = tf.train.RMSPropOptimizer(learning_rate=0.0001, decay=0.995).minimize(loss, var_list=[var for var in tf.trainable_variables()])
 
 saver=tf.train.Saver(max_to_keep=1000)
 sess.run(tf.global_variables_initializer())
