@@ -6,13 +6,16 @@ import numpy as np
 from utils import utils, helpers
 from builders import model_builder
 
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
+
 parser = argparse.ArgumentParser()
-parser.add_argument('--image', type=str, default=None, required=True, help='The image you want to predict on. ')
-parser.add_argument('--checkpoint_path', type=str, default=None, required=True, help='The path to the latest checkpoint weights for your model.')
-parser.add_argument('--crop_height', type=int, default=512, help='Height of cropped input image to network')
-parser.add_argument('--crop_width', type=int, default=512, help='Width of cropped input image to network')
-parser.add_argument('--model', type=str, default=None, required=True, help='The model you are using')
-parser.add_argument('--dataset', type=str, default="CamVid", required=False, help='The dataset you are using')
+parser.add_argument('--image', type=str, default="./test/test_1.png", required=False, help='The image you want to predict on. ')
+parser.add_argument('--checkpoint_path', type=str, default="./checkpoints/latest_model_MobileUNet_kariDB.ckpt", required=False, help='The path to the latest checkpoint weights for your model.')
+parser.add_argument('--crop_height', type=int, default=480, help='Height of cropped input image to network')
+parser.add_argument('--crop_width', type=int, default=640, help='Width of cropped input image to network')
+parser.add_argument('--model', type=str, default="MobileUNet", required=False, help='The model you are using')
+parser.add_argument('--dataset', type=str, default="kariDB", required=False, help='The dataset you are using')
 args = parser.parse_args()
 
 class_names_list, label_values = helpers.get_label_info(os.path.join(args.dataset, "classes.csv"))
@@ -56,6 +59,10 @@ input_image = np.expand_dims(np.float32(resized_image[:args.crop_height, :args.c
 
 st = time.time()
 output_image = sess.run(network,feed_dict={net_input:input_image})
+
+# saving pbtxt file
+tf.io.write_graph(sess.graph_def, './checkpoints', "latest_model_predict_"+ args.model + "_" + args.dataset + ".pb", as_text=False)
+tf.io.write_graph(sess.graph_def, './checkpoints', "latest_model_predict_"+ args.model + "_" + args.dataset + ".pbtxt", as_text=True)
 
 run_time = time.time()-st
 

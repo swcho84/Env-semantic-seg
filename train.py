@@ -101,7 +101,7 @@ network, init_fn = model_builder.build_model(model_name=args.model, frontend=arg
 
 loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=network, labels=net_output))
 
-opt = tf.train.RMSPropOptimizer(learning_rate=0.00025, decay=0.995).minimize(loss, var_list=[var for var in tf.trainable_variables()])
+opt = tf.train.RMSPropOptimizer(learning_rate=0.0001, decay=0.995).minimize(loss, var_list=[var for var in tf.trainable_variables()])
 
 saver=tf.train.Saver(max_to_keep=1000)
 sess.run(tf.global_variables_initializer())
@@ -140,6 +140,10 @@ print("\tHorizontal Flip -->", args.h_flip)
 print("\tBrightness Alteration -->", args.brightness)
 print("\tRotation -->", args.rotation)
 print("")
+
+# saving pbtxt file
+tf.io.write_graph(sess.graph_def, './checkpoints', "latest_model_"+ args.model + "_" + args.dataset + ".pb", as_text=False)
+tf.io.write_graph(sess.graph_def, './checkpoints', "latest_model_"+ args.model + "_" + args.dataset + ".pbtxt", as_text=True)
 
 avg_loss_per_epoch = []
 avg_scores_per_epoch = []
@@ -216,6 +220,8 @@ for epoch in range(args.epoch_start_i, args.num_epochs):
     # Save latest checkpoint to same file name
     print("Saving latest checkpoint")
     saver.save(sess,model_checkpoint_name)
+    tf.io.write_graph(sess.graph_def, './checkpoints', "latest_model_"+ args.model + "_" + args.dataset + ".pb", as_text=False)
+    tf.io.write_graph(sess.graph_def, '.', "latest_model_"+ args.model + "_" + args.dataset + ".pbtxt", as_text=True)
 
     if val_indices != 0 and epoch % args.checkpoint_step == 0:
         print("Saving checkpoint for this epoch")
