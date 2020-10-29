@@ -38,7 +38,7 @@ parser.add_argument('--epoch_start_i', type=int, default=0, help='Start counting
 parser.add_argument('--checkpoint_step', type=int, default=1, help='How often to save checkpoints (epochs)')
 parser.add_argument('--validation_step', type=int, default=1, help='How often to perform validation (epochs)')
 parser.add_argument('--image', type=str, default=None, help='The image you want to predict on. Only valid in "predict" mode.')
-parser.add_argument('--continue_training', type=str2bool, default=False, help='Whether to continue training from a checkpoint')
+parser.add_argument('--continue_training', type=str2bool, default=True, help='Whether to continue training from a checkpoint')
 parser.add_argument('--dataset', type=str, default="kariDB", help='Dataset you are using.')
 parser.add_argument('--crop_height', type=int, default=480, help='Height of cropped input image to network')
 parser.add_argument('--crop_width', type=int, default=640, help='Width of cropped input image to network')
@@ -141,6 +141,10 @@ print("\tBrightness Alteration -->", args.brightness)
 print("\tRotation -->", args.rotation)
 print("")
 
+# saving pbtxt file
+tf.io.write_graph(sess.graph_def, './checkpoints', "latest_model_"+ args.model + "_" + args.dataset + ".pb", as_text=False)
+tf.io.write_graph(sess.graph_def, './checkpoints', "latest_model_"+ args.model + "_" + args.dataset + ".pbtxt", as_text=True)
+
 avg_loss_per_epoch = []
 avg_scores_per_epoch = []
 avg_iou_per_epoch = []
@@ -216,6 +220,8 @@ for epoch in range(args.epoch_start_i, args.num_epochs):
     # Save latest checkpoint to same file name
     print("Saving latest checkpoint")
     saver.save(sess,model_checkpoint_name)
+    tf.io.write_graph(sess.graph_def, './checkpoints', "latest_model_"+ args.model + "_" + args.dataset + ".pb", as_text=False)
+    tf.io.write_graph(sess.graph_def, '.', "latest_model_"+ args.model + "_" + args.dataset + ".pbtxt", as_text=True)
 
     if val_indices != 0 and epoch % args.checkpoint_step == 0:
         print("Saving checkpoint for this epoch")
