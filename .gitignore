@@ -1,3 +1,6 @@
 .idea/
 kariDB/
 checkpoints/
+test/
+models/mobilenet_v2.*
+latest_model_MobileUNet_kariDB.pbtxt
