@@ -6,8 +6,10 @@ import numpy as np
 from utils import utils, helpers
 from builders import model_builder
 
+import keras as K
+
 parser = argparse.ArgumentParser()
-parser.add_argument('--image', type=str, default="./test/test_9.jpg", required=False, help='The image you want to predict on. ')
+parser.add_argument('--image', type=str, default="./test/src/test_9.jpg", required=False, help='The image you want to predict on. ')
 parser.add_argument('--checkpoint_path', type=str, default="./checkpoints/latest_model_MobileUNet_kariDB.ckpt", required=False, help='The path to the latest checkpoint weights for your model.')
 parser.add_argument('--crop_height', type=int, default=480, help='Height of cropped input image to network')
 parser.add_argument('--crop_width', type=int, default=640, help='Width of cropped input image to network')
@@ -67,8 +69,9 @@ out_vis_image = helpers.colour_code_segmentation(output_image, label_values)
 run_time = time.time()-st
 
 file_name = utils.filepath_to_name(args.image)
-cv2.imwrite("%s_pred.png"%(file_name),cv2.cvtColor(np.uint8(out_vis_image), cv2.COLOR_RGB2BGR))
+print(file_name)
+cv2.imwrite("%s_pred.png"%("./test/dst/" + file_name),cv2.cvtColor(np.uint8(out_vis_image), cv2.COLOR_RGB2BGR))
 
 print("")
 print("Finished! %f [sec]"%run_time)
-print("Wrote image " + "%s_pred.png"%(file_name))
+print("Wrote image " + "%s_pred.png"%("./test/dst/" + file_name))
