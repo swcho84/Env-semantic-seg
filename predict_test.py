@@ -75,19 +75,16 @@ target = open("./test/dst_testDB/test_scores.csv",'w')
 target.write("test_name, avg_accuracy, precision, recall, f1 score, mean iou, %s\n" % (class_names_string))
 
 # using file browsing /home/drswchornd/Env-semantic-seg/
-for filename in glob.glob('./kariDB/test/*.png'): 
+st = time.time()
+for filename in test_input_names:
   loaded_image = utils.load_image(filename)
   resized_image =cv2.resize(loaded_image, (args.crop_width, args.crop_height))
   input_image = np.expand_dims(np.float32(resized_image[:args.crop_height, :args.crop_width]),axis=0)/255.0
 
-  st = time.time()
   output_image = sess.run(network, feed_dict={net_input:input_image})
-
   output_image = np.array(output_image[0,:,:,:])
   output_image = helpers.reverse_one_hot(output_image)
-
   out_vis_image = helpers.colour_code_segmentation(output_image, label_values)
-  run_time = time.time()-st
 
   gt = utils.load_image(test_output_names[ind])[:args.crop_height, :args.crop_width]
   gt = helpers.reverse_one_hot(helpers.one_hot_it(gt, label_values))
@@ -128,5 +125,6 @@ print("Test F1 score = ", avg_f1)
 print("Test IoU score = ", avg_iou)
 
 print("")
+run_time = time.time()-st
 print("Finished! %f [sec]"%run_time)
 
