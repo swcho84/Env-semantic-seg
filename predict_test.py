@@ -107,7 +107,9 @@ for filename in test_input_names:
 
   file_name_with_ext = os.path.basename(filename)
   file_name = os.path.splitext(file_name_with_ext)[0]
-  print("Wrote image " + "%s_pred.png"%("./test/dst_testDB/" + file_name))
+  # print("Wrote image " + "%s_pred.png"%("./test/dst_testDB/" + file_name))
+  os.system('clear')
+  print("Wrote image[ind]:", ind)
   cv2.imwrite("%s_pred.png"%("./test/dst_testDB/" + file_name),cv2.cvtColor(np.uint8(out_vis_image), cv2.COLOR_RGB2BGR))
 
 avg_score = np.mean(scores_list)
